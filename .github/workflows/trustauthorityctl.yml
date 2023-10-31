@@ -5,7 +5,7 @@ on:
 
 jobs:
   run-cli-operations:
-    runs-on: trustauthorityctl-runner
+    runs-on: trustauthorityctl
 
     steps:
       - name: Print Message
