@@ -22,7 +22,7 @@ jobs:
           who
           echo Welcome to Tenant CLI Host!
 
-      - name: Run Sample CLI Command
+      - name: Run Test CLI Command
         run: |
           pwd
           source ~/.bash_profile
@@ -31,9 +31,20 @@ jobs:
       - name: Run CLI Script
         run: |
           /home/vinitkum/tenantctl_ga.sh ${{ github.event.inputs.iterations }}
-        
-      - name: Upload Results
+      
+      - name: Upload Results to Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: cli-results
           path: /home/vinitkum/results.html
+
+
+  upload-reports-to-webserver:
+    runs-on: trustauthorityctl
+    needs: [run-cli-operations]
+
+    steps:
+      - name: Copy Reports to Webserver
+        run: |
+          scp /home/vinitkum/results.html 10.80.245.171:/var/www/html/latest
+          echo "Latest Results are available at http://vinit-nfs.fm.intel.com/latest/results.html "
