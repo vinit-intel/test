@@ -17,11 +17,9 @@ jobs:
           echo Welcome to Tenant CLI Host!
 
       - name: Run Sample CLI Command
-        run: |          
-          sudo su
-          who
-          cd /root/
-          source /root/.bash_profile
+        run: |
+          pwd
+          source ~/.bash_profile
           trustauthorityctl list user
 
       - name: Upload Results
