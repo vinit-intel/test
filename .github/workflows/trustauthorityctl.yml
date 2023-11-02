@@ -23,7 +23,7 @@ jobs:
           trustauthorityctl list user
 
       - name: Upload Results
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: cli-results
-          path: /home/vinitkum/*.txt
+          path: /home/vinitkum/results.txt
