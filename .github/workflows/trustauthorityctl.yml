@@ -2,13 +2,19 @@ name: Tenant CLI
 
 on:
   workflow_dispatch:
-
+    inputs:
+      iterations:
+        type: string
+        description: Number of iterations to run
+        required: true
+        default: '10'
+        
 jobs:
   run-cli-operations:
     runs-on: trustauthorityctl
 
     steps:
-      - name: Print Message
+      - name: Get Host Details
         run: |
           lscpu
           free -m
@@ -22,8 +28,12 @@ jobs:
           source ~/.bash_profile
           trustauthorityctl list user
 
+      - name: Run CLI Script
+        run: |
+          /home/vinitkum/tenantctl_ga.sh ${{ github.event.inputs.iterations }}
+        
       - name: Upload Results
         uses: actions/upload-artifact@v3
         with:
           name: cli-results
-          path: /home/vinitkum/results.txt
+          path: /home/vinitkum/results.html
