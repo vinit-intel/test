@@ -1,0 +1,79 @@
+name: Docker Tenant CLI
+
+on:
+  workflow_dispatch:
+    inputs:
+      iterations:
+        type: string
+        description: Number of iterations to run
+        required: true
+        default: '10'
+        
+jobs:
+
+  build-and-deploy:
+    runs-on: trustauthorityctl
+    steps:
+      - name: Get Host Details
+        run: |
+          lscpu
+          free -m
+          hostnamectl
+          who
+          echo Welcome to Tenant CLI Host!
+
+      - name: Build and Run the Docker image
+        run: |
+          pwd
+          source ~/.bash_profile
+          cd /home/vinitkum/
+          docker build . --file Dockerfile --tag trustauthorityctl-image:$(date +%s)
+          #docker run -it --shm-size=2g -v $(pwd):/tmp/applications.security.amber.engineering.api-automation-robot-fw amr-registry.caas.intel.com/cassini/amber-robotframework:latest /bin/bash
+    
+
+  run-cli-operations:
+    needs: [build-and-deploy]
+    runs-on: trustauthorityctl
+    steps:
+      - name: Execute CLI Script
+        run: |
+          source ~/.bash_profile
+          /home/vinitkum/tenantctl_ga.sh ${{ github.event.inputs.iterations }}
+
+      - name: Upload Results to Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: cli-results
+          path: /home/vinitkum/results.html
+
+          
+  upload-reports-to-webserver:
+    runs-on: trustauthorityctl
+    needs: [run-cli-operations]
+    steps:
+      - name: Copy Reports to Webserver
+        run: |
+          scp /home/vinitkum/results.html 10.80.245.171:/var/www/html/latest
+          echo "Latest Results are available at http://vinit-nfs.fm.intel.com/latest/results.html "
+
+
+  clean-up:
+    needs: [run-cli-operations]
+    runs-on: trustauthorityctl
+    steps:
+      - name: Clean-up Tenant CLI
+        run: |
+          source ~/.bash_profile
+          cd /home/vinitkum/
+          trustauthorityctl uninstall
+          rm -rf trustauthority-cli
+          rm -f trustauthorityctl-*.bin
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
