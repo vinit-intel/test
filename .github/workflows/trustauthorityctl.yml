@@ -22,16 +22,29 @@ jobs:
           who
           echo Welcome to Tenant CLI Host!
 
-      - name: Run Test CLI Command
+      - name: Build and Deploy Tenant CLI
         run: |
           pwd
           source ~/.bash_profile
+          git clone https://github.com/intel-innersource/applications.security.amber.cli.git trustauthority-cli
+          cd trustauthority-cli
+          make installer
+          cp out/trustauthorityctl-*.bin /home/vinitkum/
+          cd
+          /home/vinitkum/trustauthorityctl-v1.0.0-d8a82c9.bin
+          trustauthorityctl version
           trustauthorityctl list user
 
       - name: Run CLI Script
         run: |
           /home/vinitkum/tenantctl_ga.sh ${{ github.event.inputs.iterations }}
-      
+
+      - name: Clean-up Tenant CLI
+        run: |
+          source ~/.bash_profile
+          trustauthorityctl uninstall
+          rm -rf trustauthority-cli
+          
       - name: Upload Results to Artifacts
         uses: actions/upload-artifact@v3
         with:
