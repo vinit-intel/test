@@ -26,13 +26,12 @@ jobs:
         run: |
           pwd
           source ~/.bash_profile
-          cd /home/vinitkum/
           git clone https://github.com/intel-innersource/applications.security.amber.cli.git trustauthority-cli
           cd trustauthority-cli
           make installer
-          cp out/trustauthorityctl-*.bin /home/vinitkum/
-          cd /home/vinitkum/
-          /home/vinitkum/trustauthorityctl-*.bin
+          cp out/trustauthorityctl-*.bin ~/
+          cd ~/
+          ~/trustauthorityctl-*.bin
           trustauthorityctl version
 
 
@@ -43,13 +42,13 @@ jobs:
       - name: Execute CLI Script
         run: |
           source ~/.bash_profile
-          /home/vinitkum/tenantctl_ga.sh ${{ github.event.inputs.iterations }}
+          ~/tenantctl_ga.sh ${{ github.event.inputs.iterations }}
 
       - name: Upload Results to Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: cli-results
-          path: /home/vinitkum/results.html
+          path: ~/results.html
 
           
   upload-reports-to-webserver:
@@ -58,7 +57,7 @@ jobs:
     steps:
       - name: Copy Reports to Webserver
         run: |
-          scp /home/vinitkum/results.html 10.80.245.171:/var/www/html/latest
+          scp ~/results.html 10.80.245.171:/var/www/html/latest
           echo "Latest Results are available at http://vinit-nfs.fm.intel.com/latest/results.html "
 
 
@@ -69,7 +68,7 @@ jobs:
       - name: Clean-up Tenant CLI
         run: |
           source ~/.bash_profile
-          cd /home/vinitkum/
+          cd ~/
           trustauthorityctl uninstall
           rm -rf trustauthority-cli
           rm -f trustauthorityctl-*.bin
