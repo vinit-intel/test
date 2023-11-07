@@ -22,6 +22,9 @@ jobs:
           who
           echo Welcome to Tenant CLI Host!
 
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        
       - name: Build and Deploy Tenant CLI Binary
         run: |
           pwd
