@@ -1,0 +1,37 @@
+name: Jmeter ITA API Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Print Message
+        run: |
+          lscpu
+          free -m
+          hostnamectl
+          echo Welcome to start JMeter!
+
+      - name: Run Sample JMeter Test
+        uses: rbhadti94/apache-jmeter-action@v0.5.0
+        # with:
+        #   testFilePath: tests/sample_test.jmx
+        #   outputReportsFolder: reports/
+        #   args: "--loglevel INFO"
+        with:
+          testFilePath: tests/as-tms-conc-cicd.jmx
+          outputReportsFolder: reports/
+          args: -Jtokenkey="${{ vars.ATTESTATION_API_KEY }}" -Jadmkey="${{ secrets.AMBER_ADMIN_KEY }}" -Jmgmtkey="${{ secrets.TENANT2_ADMIN_KEY }}" -Jhost="${{ vars.API_BASEURL }}" -Jlist-service-offer="${{ vars.SERVICE_OFFER }}" -Jlist-service="${{ vars.SERVICE }}" -Jlist-product="${{ vars.ENT_PRODUCT }}"
+
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeter-test-results
+          path: reports/
