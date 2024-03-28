@@ -12,7 +12,7 @@ on:
     
 jobs:
   cp-dp-concurrent-run:
-    runs-on: ubuntu-latest
+    runs-on: vinit-nfs
     environment: pre24-green
     container:
       image: octoperf/jmeter-standard
