@@ -52,7 +52,7 @@ jobs:
           echo $https_proxy
           who
           ls -ltr
-          sudo usermod -a -G docker vinitkum
+          usermod -a -G docker vinitkum
           docker version
           aws -h
           aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER_NAME }}
