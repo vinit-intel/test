@@ -46,7 +46,15 @@ jobs:
         
       - name: Connect to EKS cluster
         run: |
-          sleep 3600
+          hostname
+          hostname -I
+          echo $http_proxy
+          echo $https_proxy
+          who
+          ls -ltr
+          sudo usermod -a -G docker vinitkum
+          docker version
+          aws -h
           aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER_NAME }}
         
       - name: Get node CPU utilization
