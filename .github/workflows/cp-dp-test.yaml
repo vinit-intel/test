@@ -43,6 +43,7 @@ jobs:
         
       - name: Connect to EKS cluster
         run: |
+          sleep 3600
           aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER_NAME }}
         
       - name: Get node CPU utilization
